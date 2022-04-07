@@ -26,9 +26,7 @@ def read():
     result = db.ejecutar_consulta("SELECT * FROM sistema")
     for data in result:
         print("""
-        ID: {}
-        NOMBRE: {}
-        EMAIL : {}
+        ID: {}        NOMBRE: {}        EMAIL : {}
         """.format(data[0], data[1], data[2]))
 
 def update():
@@ -59,9 +57,7 @@ def search():
         result = db.ejecutar_consulta(sql_search, parametros)
         for data in result:
             print("""
-            +ID:{}
-            +NOMBRE:{}
-            +EMAIL : {}
+            +ID:{}            +NOMBRE:{}            +EMAIL : {}
             
             """.format(data[0], data[1], data[2]))
 
