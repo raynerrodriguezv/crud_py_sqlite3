@@ -27,3 +27,6 @@ Todos estos nuevas funciones que se describen a continuacion son para el nuevo p
 
 
 se tomo como guia el proyecto de https://github.com/Jose-developer-start
+
+
+[![alt Proyecto](https://github.com/raynerrodriguezv/crud_py_sqlite3/blob/main/Captura%20de%20pantalla%20de%202022-04-06%2021-24-17.png =600x600)]
