@@ -1,104 +1,114 @@
+import datetime, time
 from os import system
-from unittest import result
-from venv import create
-from click import option
-import paramiko
-import conexion as conn
-import time
-
-
-db = conn.DB()
-# result = db.ejecutar_consulta("SELECT * FROM sistema")
-# print(result.fetchall())
-
-def create():
-    name = str(input("Ingrese su nombre: "))
-    email = str(input("Ingrese su correo: "))
-    if(len(name) > 0 and len(email)>0):
-        sql_insert = "INSERT INTO sistema(name, email) VALUES(?,?)"
-        parametros = (name, email)
-        db.ejecutar_consulta(sql_insert,parametros)
-        print("Insertados...")
+import sqlite3 as sql
+import os
 
 
 
-def read():
-    result = db.ejecutar_consulta("SELECT * FROM sistema")
-    for data in result:
-        print("""
-        ID: {}        NOMBRE: {}        EMAIL : {}
-        """.format(data[0], data[1], data[2]))
-
-def update():
-    id = int(input("Ingrese el ID: "))
-    name = str(input("Ingrese su nombre: "))
-    email = str(input("Ingrese su correo: "))
-    if(id != 0):
-        sql_update = "UPDATE sistema SET name=?, email=? WHERE id=?"
-        parametros = (name, email, id)
-        db.ejecutar_consulta(sql_update,parametros)
-        print("Actualizado!")
-
-
-def delete():
-    id = int(input("Ingrese el ID: "))
-    if (id != 0):
-        sql_delete = "DELETE FROM sistema WHERE id=?"
-        parametros = (id,)
-        db.ejecutar_consulta(sql_delete, parametros)
-        print("Eliminado!")
+def createBD_createTable():
+    conn = sql.connect("database.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        """CREATE TABLE inventario (
+            codigo integer,
+            ubicacion text,
+            descripcion text,
+            unidad text,
+            tipo text,
+            disponibilidad text
+        )       
+        """
+    )
+    conn.commit()
+    conn.close()
 
 
-def search():
-    name = str(input("Ingrese su nombre: "))
-    if (len(name) > 0):
-        sql_search = "SELECT * FROM sistema WHERE name LIKE ?"
-        parametros = ('%{}%'.format(name),) #tupla
-        result = db.ejecutar_consulta(sql_search, parametros)
-        for data in result:
-            print("""
-            +ID:{}            +NOMBRE:{}            +EMAIL : {}
-            
-            """.format(data[0], data[1], data[2]))
-
-while True:
-    print("=================")
-    print("\tCRUD PYTHON")
-    print("=================")
-    print("\t[1] Insertar registro")
-    print("\t[2] Listar registro")
-    print("\t[3] Actualizar registro")
-    print("\t[4] Eliminar registro")
-    print("\t[5] Buscar registros")
-    print("\t[6] Salir")
-    print("=================")
+def insertRows(articuloList):
+    global articulos
+    conn = sql.connect("database.db")
+    cursor = conn.cursor()
+    insert_query = f"INSERT INTO inventario VALUES (?,?,?,?,?,?)"
+    cursor.executemany(insert_query, articuloList)
+    conn.commit()
+    conn.close()
 
 
-    try:
-        option = int(input("Seleccionar una opcion: "))
-        if(option == 1):
-            create()
-            time.sleep(1)
-            system("clear")
+def view_inventario():
+    conn = sql.connect("database.db")
+    cursor = conn.cursor()
+    read_query = f"SELECT * FROM inventario"
+    cursor.execute(read_query)
+    datos = cursor.fetchall()
+    conn.commit()
+    conn.close()
+    print(datos)
 
-        elif(option == 2):
-            read()
 
-        elif(option == 3):
-            update()
-            time.sleep(1)
-            system("clear")
+def add_items():
+    # ingreso de datos
+    global articulos
+    codigo = int(input("Ingrese el codigo del articulo: "))
+    ubicacion  = input("Ubicacion del articulo: ")
+    descripcion = input("Descripcion: ")
+    unidad = input("Unidad del articulo: ")
+    tipo = input("Tipo de articulo: ")
+    disponibilidad = input("Disponibilidad: ")
 
-        elif(option == 4):
-            delete()
-            time.sleep(1)
-            system("clear")
+    # articulos[codigo] = ubicacion, descripcion, unidad, tipo, disponibilidad
+    # print(articulos)
+    # # articulos = {}
 
-        elif(option == 5):
-            search()
+    insertRows(articuloList=articulos)    
 
-        elif(option == 6):
-            break
-    except:
-        print("Error en elegir las opciones")
+articulos = {}
+
+if __name__ == '__main__': 
+    
+    
+    if os.path.exists('./database.db') == True:
+        print("Base de datos creada...")
+    else:
+        createBD_createTable()
+        
+
+    while True:
+        print("-------- Inventario del   ---------\n")
+        print("\t[1] Visualizar inventario  ")
+        print("\t[2] Agregar Articulo ")    
+        print("\t[3] Modificar inventario del supermercado ")
+        print("\t[4] Borrar articulo x codigo ")
+        print("\t[5] Buscar en inventario x producto")
+        print("\t[6] Inventario Total")
+        print("\t[7] Salir ")
+
+        try:
+            option = int(input("Seleccionar una opcion: "))
+            if(option == 1):                
+                view_inventario()
+                # time.sleep(1)
+                # system("clear")
+
+            elif(option == 2):
+                print("dentro de la opcion 2")
+                add_items()
+
+            # elif(option == 3):
+            #     update_items()
+            #     time.sleep(1)
+            #     system("clear")
+
+            # elif(option == 4):
+            #     delete_items()
+            #     time.sleep(1)
+            #     system("clear")
+
+            # elif(option == 5):
+            #     search_items()
+
+            elif(option == 7):
+                break
+        except:
+            print("Error en elegir las opciones")
+        
+
     
