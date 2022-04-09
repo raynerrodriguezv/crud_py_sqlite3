@@ -20,9 +20,9 @@ El cual tendra varios opciones:
 Todos estos nuevas funciones que se describen a continuacion son para el nuevo proyecto
 
 - [ ] El inventario guardara la hora de ingreso de un items al stock
-- [ ] Se mostrara el inventario en un dataframe
-- [ ] Se importa el inventario en un dataframe o pandas
-- [ ] Se descarga en un archivo .csv
+- [x] Se mostrara el inventario en un dataframe
+- [x] Se importa el inventario en un dataframe o pandas
+- [x] Se descarga en un archivo .csv
 - [ ] Se crearan perfiles con roles
 
 
