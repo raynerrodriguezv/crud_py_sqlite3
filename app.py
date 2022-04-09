@@ -3,7 +3,7 @@ from os import system
 import sqlite3 as sql
 import pandas as pd
 import os
-
+import csv
 
 
 def createBD_createTable():
@@ -28,22 +28,14 @@ def insertRows():
     
     conn = sql.connect("database.db")
     cursor = conn.cursor()
-    
-
     codigo = int(input("Ingrese el codigo del articulo: "))
     ubicacion  = input("Ubicacion del articulo: ")
     descripcion = input("Descripcion: ") 
     unidad = input("Unidad del articulo: ")
     tipo = input("Tipo de articulo: ")
-    disponibilidad = input("Disponibilidad: ")
-
-    
-
+    disponibilidad = input("Disponibilidad: ")    
     insert_query = f"INSERT INTO inventario VALUES ('{codigo}','{ubicacion}','{descripcion}','{unidad}','{tipo}','{disponibilidad}')"
-
     cursor.execute(insert_query)
-    
-
     conn.commit()
     conn.close()
 
@@ -87,16 +79,35 @@ def updateFields():
     conn = sql.connect("database.db")
     cursor = conn.cursor()
     updated_codigo = int(input("Codigo de producto: ")) 
-    update_ubicacion  = input("Ubicacion del articulo: ").lower
-    update_descripcion = input("Descripcion: ").lower
-    update_unidad = input("Unidad del articulo: ").lower
-    update_tipo = input("Tipo de articulo: ").lower
-    update_disponibilidad = input("Disponibilidad: ").lower
+    update_ubicacion  = input("Ubicacion del articulo: ")
+    update_descripcion = input("Descripcion: ")
+    update_unidad = input("Unidad del articulo: ")
+    update_tipo = input("Tipo de articulo: ")
+    update_disponibilidad = input("Disponibilidad: ")
 
     update_query = f"""UPDATE inventario SET codigo='{updated_codigo}', ubicacion = '{update_ubicacion}', descripcion='{update_descripcion}', 
      unidad='{update_unidad}', tipo='{update_tipo}', disponibilidad ='{update_disponibilidad}'  WHERE codigo={updated_codigo}"""
     
     cursor.execute(update_query)    
+    conn.commit()
+    conn.close()
+
+
+def exportFile_to_CSV():
+    conn = sql.connect("database.db")  
+
+    # Export data into CSV file
+    print("Exporting data into CSV..")
+    cursor = conn.cursor()
+    cursor.execute("select * from inventario")
+    with open("inventario_data.csv", "w") as csv_file:
+        csv_writer = csv.writer(csv_file, delimiter="\t")
+        csv_writer.writerow([i[0] for i in cursor.description])
+        csv_writer.writerows(cursor)
+
+    dirpath = os.getcwd() + "/inventario_data.csv"
+    print(f"Data exported Successfully into file inventario_data.csv")
+
     conn.commit()
     conn.close()
 
@@ -115,10 +126,10 @@ if __name__ == '__main__':
         print("-------- Inventario del   ---------\n")
         print("\t[1] Visualizar inventario  ") # done
         print("\t[2] Agregar Articulo ")    # done
-        print("\t[3] Modificar inventario del supermercado ")
+        print("\t[3] Modificar inventario del supermercado ") # done
         print("\t[4] Borrar articulo x codigo ") #done
         print("\t[5] Buscar en inventario x producto") # done
-        print("\t[6] Inventario Total")
+        print("\t[6] Descargar Inventario en csv: ")  # done
         print("\t[7] Salir ") # done
 
         try:
@@ -145,6 +156,9 @@ if __name__ == '__main__':
 
             elif(option == 5):
                 search_items()
+
+            elif(option == 6):
+                exportFile_to_CSV()
 
             elif(option == 7):
                 break
