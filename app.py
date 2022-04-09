@@ -24,30 +24,25 @@ def createBD_createTable():
     conn.close()
 
 
-def insertRows(articuloList):
+def insertRows():
     
     conn = sql.connect("database.db")
     cursor = conn.cursor()
-    insert_query = f"INSERT INTO inventario VALUES (?,?,?,?,?,?)"
-
-
-    codigo = int(input("Ingrese el codigo del articulo: "))
-    ubicacion  = input("Ubicacion del articulo: ").lower
-    descripcion = input("Descripcion: ").lower
-    unidad = input("Unidad del articulo: ").lower
-    tipo = input("Tipo de articulo: ").lower
-    disponibilidad = input("Disponibilidad: ").lower
-
-
-
-    articuloList = [codigo, ubicacion , descripcion , unidad, tipo, disponibilidad]
     
 
+    codigo = int(input("Ingrese el codigo del articulo: "))
+    ubicacion  = input("Ubicacion del articulo: ")
+    descripcion = input("Descripcion: ") 
+    unidad = input("Unidad del articulo: ")
+    tipo = input("Tipo de articulo: ")
+    disponibilidad = input("Disponibilidad: ")
 
-    cursor.executemany(insert_query, articuloList)
-    print(articuloList)
+    
 
-    # insertRows(articuloList=articulos)  
+    insert_query = f"INSERT INTO inventario VALUES ('{codigo}','{ubicacion}','{descripcion}','{unidad}','{tipo}','{disponibilidad}')"
+
+    cursor.execute(insert_query)
+    
 
     conn.commit()
     conn.close()
@@ -119,12 +114,12 @@ if __name__ == '__main__':
     while True:
         print("-------- Inventario del   ---------\n")
         print("\t[1] Visualizar inventario  ") # done
-        print("\t[2] Agregar Articulo ")    
+        print("\t[2] Agregar Articulo ")    # done
         print("\t[3] Modificar inventario del supermercado ")
         print("\t[4] Borrar articulo x codigo ") #done
         print("\t[5] Buscar en inventario x producto") # done
         print("\t[6] Inventario Total")
-        print("\t[7] Salir ")
+        print("\t[7] Salir ") # done
 
         try:
             option = int(input("Seleccionar una opcion: "))
@@ -135,7 +130,7 @@ if __name__ == '__main__':
 
             elif(option == 2):
                 print("dentro de la opcion 2")
-                insertRows(articuloList=articulos)
+                insertRows()
 
             elif(option == 3):
                 updateFields()
@@ -153,8 +148,8 @@ if __name__ == '__main__':
 
             elif(option == 7):
                 break
-        except:
-            print("Error en elegir las opciones")
+        except (ValueError, TypeError):
+            print("Error en elegir las opciones o algun valor incorrecto.")
         
 
     
